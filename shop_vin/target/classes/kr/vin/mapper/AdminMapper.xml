@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.vin.mapper.AdminMapper">
+
+	<select id="getUserList" resultType="kr.vin.domain.UserVO">
+	
+		<![CDATA[
+		select * from user_tbl 
+		]]>
+		<!-- xml에서 <> 에 대한 잘못된 해석을 방지. -->
+
+	</select>
+	
+	
+
+
+
+
+</mapper>

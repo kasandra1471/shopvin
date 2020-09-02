@@ -1,0 +1,368 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+ "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="kr.vin.mapper.ProductMapper">
+
+   <!-- 카트 담기 -->
+   <insert id="addCart">
+      insert into tbl_cart (cartNum, userId, bno,
+      cartStock)
+          values (tbl_cart_seq.nextval, #{userId}, #{bno},
+      #{cartStock})
+   </insert>
+
+   <!-- 카트 리스트 -->
+   <select id="cartList" resultType="kr.vin.domain.CartListVO">
+      select
+          row_number()
+      over(order by c.cartNum desc) as num,
+          c.cartNum, c.userId,
+      c.gdsNum, c.cartStock, c.addDate,
+          g.gdsName, g.gdsPrice,
+      g.gdsThumbImg
+      from tbl_cart c
+          inner join tbl_goods g
+              on
+      c.gdsNum = g.gdsNum   
+          where c.userId = #{userId}
+   </select>
+
+   <select id="productInView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+    select * from tbl_products where bno > 0
+    ]]>
+   </select>
+
+   <select id="getTotalCount" resultType="int">
+   <![CDATA[
+   select count(*) from tbl_products where bno > 0
+   ]]>
+   </select>
+
+   <select id="getTotal2Count" resultType="int">
+   <![CDATA[
+   select count(*) from tbl_products where bno > 0
+   ]]>
+   </select>
+
+   <!-- 상품 조회 + 카테고리 조인 -->
+   <select id="productView" resultType="kr.vin.domain.ProductVO">
+      select * from tbl_products
+      where
+      bno=#{bno}  
+   </select>
+
+   <select id="getList" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+    select * from tbl_products where bno > 0
+    ]]>
+   </select>
+
+   <select id="topView" resultType="kr.vin.domain.ProductVO">
+      <![CDATA[
+      
+      select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate >= 1 and productKate <= 4
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+      ]]>
+   </select>
+
+   <select id="getListWithPaging"
+      resultType="kr.vin.domain.ProductVO">
+      <![CDATA[
+      
+      select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount}
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+      ]]>
+   </select>
+
+   <select id="teeView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+    
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and productKate = '2'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="shirtView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '3'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="knitView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '4'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="bottomView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate >= 5 and productKate <= 7
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="denimView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '6'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="slacksView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '7'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="outerView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '8'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="shoesView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '9'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="accView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate >= 10 and productKate <= 16
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="hatView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '11'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="ringView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '12'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="neckLaceView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '13'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="bagView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '14'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="beltView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '15'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+   <select id="saleView" resultType="kr.vin.domain.ProductVO">
+    <![CDATA[
+       select bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from
+      (
+      select /*+INDEX_DESC(tbl_products pk_products) */
+      rownum rn, bno, productName, productPrice, productDesc, productImg, productThumbImg, productCount, productKate, productCode, productColor, productSize
+      from 
+      tbl_products 
+      where rownum <= #{pageNum} * #{amount} and  productKate = '16'
+      )
+      where rn > (#{pageNum}-1) * #{amount}
+    ]]>
+   </select>
+
+
+   <insert id="insert">
+      insert into
+      tbl_products(bno,productName,productPrice,productDesc,productImg,productThumbImg,productCount,productKate,productCode,productOri,productColor,productSize)
+      values
+      (seq_products.nextval,#{productName},#{productPrice},#{productDesc},#{productImg},#{productThumbImg},#{productCount},#{productKate},#{productCode},#{productOri},#{productColor},#{productSize})
+   </insert>
+
+   <insert id="insertSelectKey">
+      <selectKey keyProperty="bno" order="BEFORE"
+         resultType="long">
+         select seq_products.nextval from dual
+      </selectKey>
+
+      insert into
+      tbl_products(bno,productName,productPrice,productDesc,productImg,productThumbImg,productCount,productKate,productCode,productOri,productColor,productSize)
+      values
+      (#{bno},#{productName},#{productPrice},#{productDesc},#{productImg},#{productThumbImg},#{productCount},#{productKate},#{productCode},#{productOri},#{productColor},#{productSize})
+
+   </insert>
+   <select id="read" resultType="kr.vin.domain.ProductVO">
+      select * from tbl_products where
+      bno=#{bno}
+   </select>
+
+   <delete id="delete">
+      delete from tbl_products where bno=#{bno}
+   </delete>
+
+   <update id="update">
+      update tbl_products
+      set
+      productName=#{productName},
+      productPrice=#{productPrice},
+      productDesc=#{productDesc},
+      productImg=#{productImg},
+      productThumbImg=#{productThumbImg},
+      productCount=#{productCount},
+      productKate=#{productKate},
+      productCode=#{productCode},
+      productOri=#{productOri},
+      productColor=#{productColor},
+      productSize=#{productSize}
+      where
+      bno=#{bno}
+   </update>
+</mapper>
